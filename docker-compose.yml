@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: btc-db
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: btc-prices
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    container_name: btc-backend
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      DB_HOST: localhost
+      DB_USERNAME: user
+      DB_PASSWORD: password
+      DB_NAME: btc-prices
+      API_KEY: f5700cb6689fefd087a281369dcd3f2d981005f04e1128344d38668ea9194850
+      PORT: 5000
+    ports:
+      - "5000:5000"
+
+  frontend:
+    build: ./frontend
+    container_name: btc-frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:
