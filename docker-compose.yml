@@ -21,7 +21,7 @@ services:
     depends_on:
       - postgres
     environment:
-      DB_HOST: localhost
+      DB_HOST: postgres
       DB_USERNAME: user
       DB_PASSWORD: password
       DB_NAME: btc-prices
@@ -34,6 +34,8 @@ services:
     build: ./frontend
     container_name: btc-frontend
     restart: always
+    environment:
+      - API_URL=http://btc-backend:5000
     depends_on:
       - backend
     ports:
